@@ -1379,3 +1379,25 @@ body{
         white-space: normal;
     }
 }
+@media(max-width:600px){
+
+  .continue-group{
+    position:relative !important;
+    left:52% !important;
+    top:-340px !important;
+    margin:0 !important;
+    width:160px !important;
+    max-width:160px !important;
+    z-index:50 !important;
+  }
+
+  .continued-note{
+    width:160px !important;
+    margin:0 !important;
+  }
+
+  .see-more-btn{
+    margin-top:8px !important;
+  }
+
+}
