@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARMY Talks</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="army.css">
+</head>
+
+<body>
+
+<nav>
+  <div class="logo">
+
+    <img src="images/icons/tour-logo.png" alt="Logo">
+
+    <span>
+        BTS Arirang Scrapbook
+    </span>
+
+    </div>
+
+  <ul>
+    <li><a href="index.html">HOME</a></li>
+    <li><a href="tour-dates.html">TOUR DATES</a></li>
+
+    <li><a href="army.html">ARMY SPACE</a></li>
+    
+  </ul>
+</nav>
+
+<section class="army-page">
+
+  <div class="army-header">
+    <h1>ARMY Talks</h1>
+    <p class="army-description">
+      Share your thoughts, stories, memories and photos about the tour.
+    </p>
+  </div>
+
+  <div class="army-layout">
+
+    <div class="post-box">
+
+      <div class="post-user">
+       <div class="user-avatar">✧</div>
+        <input id="army-name" type="text" placeholder="Your name">
+      </div>
+
+      <textarea id="army-message" placeholder="What are you thinking about the tour?"></textarea>
+
+      <div id="photo-preview"></div>
+
+      <div class="post-actions">
+
+        <label class="photo-upload-btn">
+          Add photo
+          <input id="army-photo" type="file" accept="image/*">
+        </label>
+
+        <span id="char-count">0/280</span>
+
+        <button onclick="publishPost()">Publish</button>
+      </div>
+
+    </div>
+
+    <div class="tabs">
+  <button class="active" onclick="filterPosts('all', this)">All</button>
+  <button onclick="filterPosts('recent', this)">Recent</button>
+  <button onclick="filterPosts('photos', this)">Photos</button>
+</div>
+
+    <div id="army-feed" class="army-feed"></div>
+
+  </div>
+
+</section>
+
+<footer class="footer">
+  <p>© BTS ARIRANG SCRAPBOOK 2026</p>
+  <p class="footer-center">FOR BTS, WITH ARMY, ALWAYS ♥</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="army.js"></script>
+</body>
+</html>

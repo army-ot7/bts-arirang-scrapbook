@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ======================
+   HEAD
+====================== -->
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title> Goyang Tour Stop</title>
+
+    <!-- GOOGLE FONTS -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- FONT AWESOME ICONS -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- CSS -->
+
+<link rel="stylesheet" href="style.css">
+
+
+</head>
+
+<body>
+
+<!-- ======================
+   NAVBAR
+====================== -->
+
+<nav>
+
+    <div class="logo">
+
+    <img src="images/icons/tour-logo.png" alt="Logo">
+
+    <span>
+        BTS Arirang Scrapbook
+    </span>
+
+</div>
+
+    <ul>
+
+        <li><a href="index.html">HOME</a></li>
+
+        <li><a href="tour-dates.html">TOUR DATES</a></li>
+
+        <li><a href="army.html">ARMY SPACE</a></li>
+
+    </ul>
+
+</nav>
+
+
+<!-- ======================
+   SCRAPBOOK PAGE
+====================== -->
+
+<section class="scrapbook-page">
+
+
+    <!-- ======================
+       CITY INFO
+    ====================== -->
+
+   <div class="seoul-top-layout">
+
+    <div class="seoul-left">
+        <p class="archive">Singapore</p>
+        <h1>Army Memories</h1>
+
+        <div class="date-box" id="date-box">
+            December 17, 2026
+        </div>
+
+        <div class="day-buttons">
+            <button onclick="showDay(1)">DAY 1</button>
+            <button onclick="showDay(2)">DAY 2</button>
+            <button onclick="showDay(3)">DAY 3</button>
+            <button onclick="showDay(4)">DAY 4</button>
+        </div>
+        
+
+    </div>
+
+   <div class="stadium-area">
+
+    <div class="stadium-box">
+
+        <div class="stadium-text">
+
+            <p class="stadium-label">VENUE</p>
+
+        <h3>NATIONAL STADIUM</h3>
+
+        <p>Singapore</p>
+
+        <p class="capacity">Seating capacity: 55,000</p>
+
+    </div>
+
+    <div class="stadium-photo-frame">
+
+        <img src="images/stadiums/singapure-stadium.jpg" alt="NATIONAL STADIUM">
+
+    </div>
+
+    </div>
+
+    <div class="upload-box">
+
+    <select id="concert-date" class="concert-select" onchange="loadPhotos()">
+
+        <option value="">
+            Choose concert date
+        </option>
+
+        <option value="singapore-day-1">
+            Singapore - Day 1 - December 17, 2026
+        </option>
+
+        <option value="singapore-day-2">
+            Singapore - Day 2 - December 19, 2026
+        </option>
+
+        <option value="singapore-day-3">
+            Singapore - Day 3 - December 20, 2026
+        </option>
+
+         <option value="singapore-day-4">
+            Singapore - Day 4 - December 22, 2026
+        </option>
+
+    </select>
+
+    <label onclick="openUploadModal()" class="choose-file">
+    + Upload Memory
+</label>
+
+</div>
+
+</div>
+   
+
+</div>
+
+    <!-- ======================
+       GALLERY
+    ====================== -->
+
+
+    <div id="photo-gallery" class="photo-gallery"></div>
+
+    <!-- ======================
+       PHOTO POPUP
+    ====================== -->
+
+    <div id="popup" class="popup">
+
+    <span class="close">&times;</span>
+
+    <button class="carousel-arrow carousel-prev" onclick="event.stopPropagation(); prevCarouselImage()">‹</button>
+
+    <img id="popup-image" alt="Selected memory">
+
+    <!-- NUEVO -->
+    <p id="popup-caption" class="popup-caption"></p>
+
+    <button class="carousel-arrow carousel-next" onclick="event.stopPropagation(); nextCarouselImage()">›</button>
+
+    <div id="carousel-counter" class="carousel-counter"></div>
+
+</div>
+
+</section>
+
+
+<!-- ======================
+   SHOW DAY FUNCTION
+====================== -->
+
+<script>
+
+function showDay(day){
+
+    const dates={
+        1:"December 17, 2026",
+        2:"December 19, 2026",
+        3:"December 20, 2026",
+        4:"December 22, 2026"
+    };
+
+    document.getElementById("date-box").innerText = dates[day];
+
+    const concertSelect = document.getElementById("concert-date");
+
+    if(day === 1){
+        concertSelect.value = "singapore-day-1";
+    }
+
+    if(day === 2){
+        concertSelect.value = "singapore-day-2";
+    }
+
+    if(day === 3){
+        concertSelect.value = "singapore-day-3";
+    }
+
+    if(day === 4){
+        concertSelect.value = "singapore-day-4";
+    }
+
+    loadPhotos();
+
+}
+
+
+</script>
+
+
+<!-- ======================
+   PHOTO POPUP FUNCTION
+====================== -->
+
+<script>
+
+let zoomLevel = 1;
+let carouselMedia = [];
+let currentCarouselIndex = 0;
+let currentCarouselCaption = "";
+
+function normalizeMediaList(mediaList){
+
+    const rawList = Array.isArray(mediaList)
+    ? mediaList
+    : [mediaList];
+
+    return rawList
+    .filter(Boolean)
+    .map(item => {
+
+        if(typeof item === "string"){
+            return item;
+        }
+
+        return item.url || item.publicUrl || item.src || item.image_url || "";
+
+    })
+    .filter(Boolean);
+
+}
+
+function updateCarouselView(){
+
+    const popupImage = document.getElementById("popup-image");
+    const counter = document.getElementById("carousel-counter");
+    const prevButton = document.querySelector(".carousel-prev");
+    const nextButton = document.querySelector(".carousel-next");
+
+    if(!carouselMedia.length){
+        return;
+    }
+
+    popupImage.src = carouselMedia[currentCarouselIndex];
+    popupImage.style.display = "block";
+
+    zoomLevel = 1;
+    popupImage.style.transform = "scale(1)";
+    popupImage.style.transformOrigin = "center center";
+
+    if(carouselMedia.length > 1){
+        counter.innerText = `${currentCarouselIndex + 1} / ${carouselMedia.length}`;
+        counter.style.display = "block";
+        prevButton.style.display = "block";
+        nextButton.style.display = "block";
+    }
+    else{
+        counter.innerText = "";
+        counter.style.display = "none";
+        prevButton.style.display = "none";
+        nextButton.style.display = "none";
+    }
+
+}
+
+function openPhotoCarousel(mediaList, startIndex = 0, caption = ""){
+
+    carouselMedia = normalizeMediaList(mediaList);
+    currentCarouselCaption = caption;
+
+    if(!carouselMedia.length){
+        return;
+    }
+
+    currentCarouselIndex = startIndex;
+
+    document.getElementById("popup").style.display = "flex";
+
+    updateCarouselView();
+
+    const popupCaption = document.getElementById("popup-caption");
+
+    if(popupCaption){
+        popupCaption.innerText = currentCarouselCaption || "";
+    }
+
+}
+
+function openPhoto(imageSrc){
+
+    openPhotoCarousel([imageSrc], 0);
+
+}
+
+function nextCarouselImage(){
+
+    if(carouselMedia.length <= 1){
+        return;
+    }
+
+    currentCarouselIndex =
+    (currentCarouselIndex + 1) % carouselMedia.length;
+
+    updateCarouselView();
+
+}
+
+function prevCarouselImage(){
+
+    if(carouselMedia.length <= 1){
+        return;
+    }
+
+    currentCarouselIndex =
+    (currentCarouselIndex - 1 + carouselMedia.length) % carouselMedia.length;
+
+    updateCarouselView();
+
+}
+
+document.querySelector(".close").onclick = function(){
+
+    document.getElementById("popup").style.display = "none";
+
+};
+
+</script>
+
+
+<!-- ======================
+   PHOTO ZOOM
+====================== -->
+
+<script>
+
+let popupImage=document.getElementById("popup-image");
+
+popupImage.addEventListener("wheel",function(event){
+
+    event.preventDefault();
+
+    const rect=this.getBoundingClientRect();
+
+    const x=((event.clientX-rect.left)/rect.width)*100;
+
+    const y=((event.clientY-rect.top)/rect.height)*100;
+
+    this.style.transformOrigin=`${x}% ${y}%`;
+
+    if(event.deltaY<0){
+        zoomLevel+=0.2;
+    }
+    else{
+        zoomLevel-=0.2;
+    }
+
+    if(zoomLevel<1){
+        zoomLevel=1;
+    }
+
+    this.style.transform=`scale(${zoomLevel})`;
+
+});
+
+</script>
+
+<!-- ======================
+   PHOTO upLOAD FUNCTION
+====================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script src="supabase.js"></script>
+
+<script>
+console.log("SUPABASE TEST:", supabaseClient);
+</script>
+
+<script>
+
+let selectedFiles = [];
+
+async function uploadPhoto(button){
+
+    const uploadBtn = button;
+
+    if(uploadBtn.disabled){
+        return;
+    }
+
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = "Uploading...";
+
+    try{
+
+        const fileInput = document.getElementById("photo-upload");
+        const files = selectedFiles;
+
+        const modalCity = document.getElementById("modal-city").value;
+        const modalDay = document.getElementById("modal-day").value;
+        const uploaderName = document.getElementById("uploader-name").value;
+        const caption = document.getElementById("photo-caption").value;
+
+        if(!modalCity){
+            alert("Choose city first");
+            return;
+        }
+
+        if(!modalDay){
+            alert("Choose date first");
+            return;
+        }
+
+        if(!files || files.length === 0){
+            alert("Choose at least one photo");
+            return;
+        }
+
+        const concertDate = `singapore-day-${modalDay}`;
+        let imageUrls = [];
+
+        for(const file of files){
+
+            if(!file.type.startsWith("image/")){
+                alert("Only photos are allowed");
+                return;
+            }
+
+            const fileExt = file.name.split(".").pop().toLowerCase();
+            const filePath = `${concertDate}/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+
+            const { error: uploadError } = await supabaseClient.storage
+            .from("fan-uploads")
+            .upload(filePath, file);
+
+            if(uploadError){
+                console.error("SUPABASE UPLOAD ERROR:", uploadError);
+                alert(uploadError.message);
+                return;
+            }
+
+            const publicURL = supabaseClient.storage
+            .from("fan-uploads")
+            .getPublicUrl(filePath);
+
+            imageUrls.push(publicURL.data.publicUrl);
+        }
+
+        const { error: postError } = await supabaseClient
+        .from("fan_posts")
+        .insert([
+            {
+                city: modalCity,
+                day: Number(modalDay),
+                image_url: imageUrls[0],
+                image_urls: imageUrls,
+                caption: caption,
+                uploader_name: uploaderName,
+                likes: 0
+            }
+        ]);
+
+        if(postError){
+            console.error("TABLE INSERT ERROR:", postError);
+            alert(postError.message);
+            return;
+        }
+
+        await loadPhotos();
+
+        selectedFiles = [];
+
+        const filePreview = document.getElementById("file-preview");
+        if(filePreview){
+            filePreview.innerHTML = "";
+        }
+
+        resetUploadModal();
+
+        closeUploadModal();
+
+    }finally{
+
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = "Post Memory";
+
+    }
+}
+
+
+
+async function loadPhotos(){
+
+    const gallery =
+    document.getElementById("photo-gallery");
+
+    const concertDate =
+    document.getElementById("concert-date").value;
+
+    if(!concertDate){
+        allPosts = [];
+        gallery.innerHTML = "";
+
+        return;
+
+    }
+
+    const dayNumber =
+    Number(concertDate.replace("singapore-day-", ""));
+
+    const { data, error } =
+    await supabaseClient
+    .from("fan_posts")
+    .select("*")
+    .eq("city", "Singapore")
+    .eq("day", dayNumber)
+    .order("created_at", { ascending:false });
+
+    if(error){
+
+        console.log(error);
+
+        return;
+
+    }
+
+    allPosts = data || [];
+
+    gallery.innerHTML = "";
+
+    allPosts.forEach(post => {
+
+    const polaroid = document.createElement("div");
+    polaroid.className = "polaroid";
+
+    const postMedia = normalizeMediaList(
+        Array.isArray(post.image_urls) && post.image_urls.length > 0
+        ? post.image_urls
+        : [post.image_url]
+    );
+
+    if(postMedia.length === 0){
+        return;
+    }
+
+    const firstMedia = postMedia[0];
+
+    const carouselBadge =
+    postMedia.length > 1
+    ? `<span class="multi-photo-badge">${postMedia.length} photos</span>`
+    : "";
+
+    const coverMediaHTML = `
+        <img
+            src="${firstMedia}"
+            class="gallery-photo"
+            alt="ARMY memory"
+        >
+    `;
+
+    polaroid.innerHTML = `
+        <div class="memory-images">
+            ${coverMediaHTML}
+        </div>
+
+        <div class="memory-info">
+            <p class="photo-caption">
+                ${post.caption || ""}
+            </p>
+
+            ${carouselBadge}
+        </div>
+    `;
+
+    polaroid.onclick = function(){
+        openMemory(post);
+    };
+
+    gallery.appendChild(polaroid);
+
+});
+
+}
+let allPosts = [];
+
+function openMemoryById(id){
+
+    const post =
+    allPosts.find(item => item.id === id);
+
+    if(post){
+        openMemory(post);
+    }
+
+}
+
+
+function openMemory(post){
+
+    const images = post.image_urls && post.image_urls.length > 0
+    ? post.image_urls
+    : [post.image_url];
+
+    openPhotoCarousel(images, 0, post.caption || "");
+}
+
+document
+.getElementById("concert-date")
+.addEventListener("change", loadPhotos);
+
+window.addEventListener("load", function(){
+    showDay(1);
+});
+
+function openUploadModal(){
+
+    document
+    .getElementById("upload-modal")
+    .style.display = "flex";
+
+}
+
+function closeUploadModal(){
+
+    document
+    .getElementById("upload-modal")
+    .style.display = "none";
+
+}
+function resetUploadModal(){
+
+    document.getElementById("modal-city").value = "";
+    document.getElementById("modal-day").value = "";
+    document.getElementById("uploader-name").value = "";
+    document.getElementById("photo-caption").value = "";
+    document.getElementById("photo-upload").value = "";
+    selectedFiles = [];
+
+    const filePreview = document.getElementById("file-preview");
+    if(filePreview){
+        filePreview.innerHTML = "";
+    }
+
+}
+
+</script>
+
+<div id="upload-modal" class="upload-modal">
+
+    <div class="upload-modal-content">
+
+        <span class="close-modal" onclick="closeUploadModal()">×</span>
+
+        <h2>Upload Your Memory ✧</h2>
+
+        <select id="modal-city" required>
+            <option value="">Choose city *</option>
+            <option value="Singapore">Singapore</option>
+        </select>
+
+        <select id="modal-day" required>
+            <option value="">Choose date *</option>
+            <option value="1">Singapore - Day 1 - December 17, 2026</option>
+            <option value="2">Singapore - Day 2 - December 19, 2026</option>
+            <option value="3">Singapore - Day 3 - December 20, 2026</option>
+            <option value="4">Singapore - Day 4 - December 22, 2026</option>
+        </select>
+
+        <input
+            type="text"
+            id="uploader-name"
+            placeholder="Your name (optional)"
+        >
+
+        <textarea
+            id="photo-caption"
+            placeholder="Write a short memory... (max 45 characters)"
+            maxlength="45"
+        ></textarea>
+
+        <label for="photo-upload" class="modal-file-button">
+            Choose Photos
+        </label>
+
+        <input
+            type="file"
+            id="photo-upload"
+            accept="image/*"
+            multiple
+            hidden
+        >
+
+        <div id="file-preview" class="file-preview"></div>
+
+        <button onclick="uploadPhoto(this)" class="choose-file">
+            Post Memory
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+const photoInput = document.getElementById("photo-upload");
+const filePreview = document.getElementById("file-preview");
+
+if(photoInput && filePreview){
+
+    photoInput.addEventListener("change", function(){
+
+        selectedFiles = [
+            ...selectedFiles,
+            ...Array.from(photoInput.files)
+        ];
+
+        renderPreviews();
+
+        photoInput.value = "";
+
+    });
+
+}
+
+function renderPreviews(){
+
+    filePreview.innerHTML = "";
+
+    selectedFiles.forEach((file,index) => {
+
+        if(!file.type.startsWith("image/")){
+            return;
+        }
+
+        const fileURL = URL.createObjectURL(file);
+
+        const previewItem = document.createElement("div");
+        previewItem.className = "preview-item";
+
+        const img = document.createElement("img");
+        img.src = fileURL;
+
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "remove-preview";
+        removeBtn.innerHTML = "×";
+        removeBtn.type = "button";
+
+        removeBtn.onclick = () => {
+
+            selectedFiles.splice(index,1);
+
+            renderPreviews();
+
+        };
+
+        previewItem.appendChild(img);
+        previewItem.appendChild(removeBtn);
+        filePreview.appendChild(previewItem);
+
+    });
+
+}
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tour Dates | BTS Arirang Scrapbook</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Poppins', sans-serif;
+      background:white;
+      color:#111;
+    }
+
+    .page{
+      min-height:100vh;
+      background:white;
+    }
+
+    nav{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:30px 90px;
+    }
+
+    .logo{
+      display:flex;
+      align-items:center;
+      font-family:'Playfair Display', serif;
+      font-size:20px;
+      font-weight:400;
+    }
+
+    .logo img{
+      width:60px;
+      height:60px;
+      object-fit:contain;
+    }
+
+    ul{
+      display:flex;
+      gap:50px;
+      list-style:none;
+    }
+
+    li a{
+      text-decoration:none;
+      color:black;
+      font-size:14px;
+      transition:.3s;
+    }
+
+    li a:hover{
+      color:#b85c5c;
+    }
+
+    .title{
+      padding:40px 90px 0;
+      margin-bottom:26px;
+      margin-top:-10px;
+    }
+
+    .title h1{
+      font-family:'Playfair Display', serif;
+      font-size:55px;
+      line-height:.9;
+      font-weight:400;
+      margin:0;
+    }
+
+    .title p{
+      font-size:15px;
+      margin-top:20px;
+      color:#686666;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:340px 1fr;
+      gap:42px;
+      align-items:start;
+      padding:20px 90px 90px;
+    }
+
+    
+
+    .timeline-panel{
+      max-height:720px;
+      overflow-y:auto;
+      padding-right:18px;
+      border-right:1px solid #ddd;
+    }
+
+    .timeline-panel::-webkit-scrollbar{
+      width:6px;
+    }
+
+    .timeline-panel::-webkit-scrollbar-thumb{
+      background:#b85c5c;
+      border-radius:20px;
+    }
+
+    .city-group{
+      margin-bottom:34px;
+    }
+
+    .city-name{
+      color:#b85c5c;
+      font-size:16px;
+      font-weight:bold;
+      letter-spacing:.5px;
+      margin-bottom:18px;
+      text-transform:uppercase;
+    }
+
+    .date-item{
+      position:relative;
+      display:grid;
+      grid-template-columns:36px 60px 1fr;
+      gap:12px;
+      align-items:center;
+      min-height:58px;
+      color:#111;
+      text-decoration:none;
+      border-radius:14px;
+      transition:.2s ease;
+    }
+
+    .date-item:hover{
+      background:rgba(184,92,92,.08);
+      transform:translateX(4px);
+    }
+
+    .date-item::before{
+      content:"";
+      position:absolute;
+      left:13px;
+      top:0;
+      bottom:0;
+      width:2px;
+      background:#d6d6d6;
+      z-index:0;
+    }
+
+    .date-item:first-of-type::before{
+      top:50%;
+    }
+
+    .date-item:last-child::before{
+      bottom:50%;
+    }
+
+    .dot{
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      border:2px solid #aaa;
+      background:white;
+      z-index:1;
+      margin-left:5px;
+    }
+
+    .date-item.completed .dot{
+      background:#b85c5c;
+      border-color:#b85c5c;
+    }
+
+    .date-item.completed::before{
+      background:#b85c5c;
+    }
+
+    .day{
+      font-weight:bold;
+      font-size:15px;
+    }
+
+    .date{
+      font-size:14px;
+      color:#333;
+    }
+
+    .map-area{
+      position:relative;
+      min-height:600px;
+      border-radius:28px;
+      overflow:hidden;
+      background:#fff;
+      border:1px solid #f3e5eb;
+      box-shadow:0 20px 45px rgba(80,30,30,.12);
+    }
+
+    #tourMap{
+      width:100%;
+      height:500px;
+      border-radius:28px;
+      z-index:1;
+    }
+
+    .leaflet-container{
+      font-family:'Poppins', sans-serif;
+      background:#fdf7f7;
+    }
+
+    .leaflet-popup-content-wrapper{
+      border-radius:18px;
+      box-shadow:0 10px 30px rgba(90,30,30,.18);
+    }
+
+    .leaflet-popup-content{
+      margin:15px 18px;
+    }
+
+    .popup-city{
+      font-weight:600;
+      color:#7b2f2f;
+      font-size:15px;
+      margin-bottom:3px;
+    }
+
+    .popup-venue{
+      font-size:12px;
+      color:#777;
+      margin-bottom:10px;
+    }
+
+    .popup-link{
+      display:inline-block;
+      color:#b85c5c;
+      text-decoration:none;
+      font-weight:600;
+      font-size:13px;
+    }
+
+    .custom-pin span{
+      display:block;
+      width:17px;
+      height:17px;
+      border-radius:50%;
+      border:3px solid white;
+      box-shadow:0 4px 12px rgba(0,0,0,.25);
+    }
+
+    .completed-pin span{
+      background:#b85c5c;
+    }
+
+    .upcoming-pin span{
+      background:white;
+      border:3px solid #b85c5c;
+    }
+
+    .legend{
+      position:absolute;
+      bottom:26px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:30px;
+      padding:14px 28px;
+      border:1px solid #eadce2;
+      border-radius:16px;
+      background:rgba(255,255,255,.88);
+      backdrop-filter:blur(8px);
+      font-size:14px;
+      z-index:500;
+      box-shadow:0 10px 25px rgba(80,30,30,.12);
+    }
+
+    .legend span{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .legend-dot{
+      width:14px;
+      height:14px;
+      border-radius:50%;
+      border:2px solid #b85c5c;
+      background:white;
+      display:inline-block;
+    }
+
+    .legend-dot.done{
+      background:#b85c5c;
+      border-color:#b85c5c;
+    }
+
+    html{
+     scroll-behavior:smooth;
+    }
+
+    
+  .footer{
+    position:relative;
+    max-width:1400px;
+    margin:0 auto;
+    padding:34px 70px;
+    background:#ffffff;
+    display:grid;
+    grid-template-columns:1fr  1fr;
+    align-items:center;
+
+   border-top:1px solid rgba(120,70,45,.18);
+
+   font-size:.85rem;
+   letter-spacing:.5px;
+  }
+
+  .footer p{
+    margin:0;
+  }
+
+  .footer-center{
+    text-align:center;
+  }
+
+  .footer p:last-of-type{
+    text-align:right;
+  }
+
+  .mobile-map-btn{
+  display:none !important;
+}
+
+@media(max-width:900px){
+
+  .page{
+    padding:0;
+  }
+  nav{
+    padding:10px;
+  }
+  ul{
+    gap:10px;
+  }
+  .layout, .title{ 
+   padding-left:20px; 
+   padding-right:20px; 
+  } 
+
+  .timeline-panel{ 
+   max-height:none; 
+   border-right:none; 
+   border-bottom:1px solid #ddd; 
+   padding-bottom:30px; 
+  } 
+
+  .map-area{ 
+   min-height:520px; 
+  } 
+
+  #tourMap{
+   height:520px; 
+  } 
+
+
+  .legend{ 
+   bottom:18px; 
+   gap:18px; 
+   padding:12px 18px;
+   font-size:12px;
+ }  
+
+  .mobile-map-btn{
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+
+    position:fixed !important;
+    left:50% !important;
+    bottom:22px !important;
+    transform:translateX(-50%) !important;
+    z-index:99999 !important;
+
+    width:280px;
+    max-width:360px;
+    height:auto;
+
+    padding:13px 22px;
+    border:none;
+    border-radius:999px;
+
+    background:#b85c5c;
+    color:white;
+
+    font-family:'Poppins', sans-serif;
+    font-size:13px;
+    font-weight:600;
+
+    box-shadow:0 10px 25px rgba(184,92,92,.35);
+    cursor:pointer;
+  }
+  .layout{
+    display:block;
+   padding-bottom:120px;
+  }
+}
+@media(max-width:600px){
+.footer{
+  grid-template-columns:1fr;
+  gap:12px;
+  text-align:center;
+  padding:30px 20px 30px;
+}
+
+.footer p,
+.footer p:last-of-type{
+  text-align:center;
+}
+}
+@media(max-width: 768px){
+
+    nav{
+        padding: 22px 28px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    nav .logo{
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        flex-shrink: 0;
+        width: 135px;
+    }
+
+    nav .logo img{
+        width: 34px;
+        height: auto;
+    }
+
+    nav .logo span{
+        font-size: 14px;
+        line-height: 1.1;
+    }
+
+    nav ul{
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+        gap: 13px;
+        margin: 0;
+        padding: 0;
+        flex-wrap: nowrap;
+    }
+
+    nav ul li,
+    nav ul li a{
+        font-size: 11px;
+        line-height: 1.15;
+        text-align: center;
+        white-space: normal;
+    }
+}
+
+.leaflet-tile-pane{ 
+filter: sepia(12%) saturate(80%) contrast(92%) brightness(104%); }
+
+  </style>
+
+  
+</head>
+
+<body>
+
+<main class="page">
+
+  <nav>
+    <div class="logo">
+      <img src="images/icons/tour-logo.png" alt="Logo">
+      <span>BTS Arirang Scrapbook</span>
+    </div>
+
+    <ul>
+      <li><a href="index.html">HOME</a></li>
+      <li><a href="tour-dates.html">TOUR DATES</a></li>
+      <li><a href="army.html">ARMY SPACE</a></li>
+    </ul>
+  </nav>
+
+  <section class="title">
+    <h1>TOUR DATES</h1>
+    <p>Follow BTS around the world ✦</p>
+  </section>
+
+ <a href="#interactiveMap" class="mobile-map-btn">
+    Show interactive map
+</a>
+
+  <section class="layout">
+
+    <aside class="timeline-panel" id="timeline"></aside>
+
+    <section class="map-area" id="interactiveMap">
+      <div id="tourMap"></div>
+
+      <div class="legend">
+        <span><i class="legend-dot done"></i> Completed</span>
+        <span><i class="legend-dot"></i> Upcoming</span>
+      </div>
+    </section>
+
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>© BTS ARIRANG SCRAPBOOK 2026</p>
+  <p class="footer-center">FOR BTS, WITH ARMY, ALWAYS ♥</p>
+</footer>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+  const today = new Date();
+
+  const tourCities = [
+    {
+      city:"Goyang",
+      venue:"Goyang Stadium",
+      page:"seoul.html",
+      lat:37.6584,
+      lng:126.8320,
+      dates:["April 9, 2026","April 11, 2026","April 12, 2026"]
+    },
+    {
+      city:"Tokyo",
+      venue:"Tokyo Dome",
+      page:"tokyo.html",
+      lat:35.6764,
+      lng:139.6500,
+      dates:["April 17, 2026","April 18, 2026"]
+    },
+    {
+      city:"Tampa",
+      venue:"Raymond James Stadium",
+      page:"tampa.html",
+      lat:27.9506,
+      lng:-82.4572,
+      dates:["April 25, 2026","April 26, 2026","April 28, 2026"]
+    },
+    {
+      city:"El Paso",
+      venue:"Sun Bowl Stadium",
+      page:"elpaso.html",
+      lat:31.7619,
+      lng:-106.4850,
+      dates:["May 2, 2026","May 3, 2026"]
+    },
+    {
+      city:"Mexico City",
+      venue:"Estadio GNP Seguros",
+      page:"mexicocity.html",
+      lat:19.4326,
+      lng:-99.1332,
+      dates:["May 7, 2026","May 9, 2026","May 10, 2026"]
+    },
+    {
+      city:"Stanford",
+      venue:"Stanford Stadium",
+      page:"stanford.html",
+      lat:37.4275,
+      lng:-122.1697,
+      dates:["May 16, 2026","May 17, 2026","May 19, 2026"]
+    },
+    {
+      city:"Las Vegas",
+      venue:"Allegiant Stadium",
+      page:"lasvegas.html",
+      lat:36.1716,
+      lng:-115.1391,
+      dates:["May 23, 2026","May 24, 2026","May 27, 2026","May 28, 2026"]
+    },
+    {
+      city:"Busan",
+      venue:"Busan Asiad Main Stadium",
+      page:"busan.html",
+      lat:35.1796,
+      lng:129.0756,
+      dates:["June 12, 2026","June 13, 2026"]
+    },
+    {
+      city:"Madrid",
+      venue:"Riyadh Air Metropolitano",
+      page:"madrid.html",
+      lat:40.4168,
+      lng:-3.7038,
+      dates:["June 26, 2026","June 27, 2026"]
+    },
+    {
+      city:"Brussels",
+      venue:"King Baudouin Stadium",
+      page:"brussels.html",
+      lat:50.8503,
+      lng:4.3517,
+      dates:["July 1, 2026","July 2, 2026"]
+    },
+    {
+      city:"London",
+      venue:"Tottenham Hotspur Stadium",
+      page:"london.html",
+      lat:51.5072,
+      lng:-0.1276,
+      dates:["July 6, 2026","July 7, 2026"]
+    },
+    {
+      city:"Munich",
+      venue:"Allianz Arena",
+      page:"munich.html",
+      lat:48.1351,
+      lng:11.5820,
+      dates:["July 11, 2026","July 12, 2026"]
+    },
+    {
+      city:"Paris",
+      venue:"Stade De France",
+      page:"paris.html",
+      lat:48.8566,
+      lng:2.3522,
+      dates:["July 17, 2026","July 18, 2026"]
+    },
+    {
+      city:"East Rutherford",
+      venue:"Metlife Stadium",
+      page:"eastrutherford.html",
+      lat:40.8339,
+      lng:-74.0971,
+      dates:["August 1, 2026","August 2, 2026"]
+    },
+    {
+      city:"Foxborough",
+      venue:"Gillette Stadium",
+      page:"foxborough.html",
+      lat:42.0654,
+      lng:-71.2478,
+      dates:["August 5, 2026","August 6, 2026"]
+    },
+    {
+      city:"Baltimore",
+      venue:"M&T Bank Stadium",
+      page:"baltimore.html",
+      lat:39.2904,
+      lng:-76.6122,
+      dates:["August 10, 2026","August 11, 2026"]
+    },
+    {
+      city:"Arlington",
+      venue:"AT&T Stadium",
+      page:"arlington.html",
+      lat:32.7357,
+      lng:-97.1081,
+      dates:["August 15, 2026","August 16, 2026"]
+    },
+    {
+      city:"Toronto",
+      venue:"Rogers Stadium",
+      page:"toronto.html",
+      lat:43.6532,
+      lng:-79.3832,
+      dates:["August 22, 2026","August 23, 2026"]
+    },
+    {
+      city:"Chicago",
+      venue:"Soldier Field",
+      page:"chicago.html",
+      lat:41.8781,
+      lng:-87.6298,
+      dates:["August 27, 2026","August 28, 2026"]
+    },
+    {
+      city:"Los Angeles",
+      venue:"SoFi Stadium",
+      page:"losangeles.html",
+      lat:34.0522,
+      lng:-118.2437,
+      dates:["September 1, 2026","September 2, 2026","September 5, 2026","September 6, 2026"]
+    },
+    {
+      city:"Bogota",
+      venue:"Estadio El Campín",
+      page:"bogota.html",
+      lat:4.7110,
+      lng:-74.0721,
+      dates:["October 2, 2026","October 3, 2026"]
+    },
+    {
+      city:"Lima",
+      venue:"Estadio San Marcos",
+      page:"lima.html",
+      lat:-12.0464,
+      lng:-77.0428,
+      dates:["October 7, 2026","October 9, 2026","October 10, 2026"]
+    },
+    {
+      city:"Santiago",
+      venue:"Estadio Nacional",
+      page:"santiago.html",
+      lat:-33.4489,
+      lng:-70.6693,
+      dates:["October 14, 2026","October 16, 2026","October 17, 2026"]
+    },
+    {
+      city:"Buenos Aires",
+      venue:"Estadio Único De La Plata",
+      page:"buenosaires.html",
+      lat:-34.6037,
+      lng:-58.3816,
+      dates:["October 21, 2026","October 23, 2026","October 24, 2026"]
+    },
+    {
+      city:"São Paulo",
+      venue:"Estádio Do Morumbis",
+      page:"saopaulo.html",
+      lat:-23.5505,
+      lng:-46.6333,
+      dates:["October 28, 2026","October 30, 2026","October 31, 2026"]
+    },
+    {
+      city:"Kaohsiung",
+      venue:"Kaohsiung National Stadium",
+      page:"kaohsiung.html",
+      lat:22.6273,
+      lng:120.3014,
+      dates:["November 19, 2026","November 21, 2026","November 22, 2026"]
+    },
+    {
+      city:"Bangkok",
+      venue:"Rajamangala National Stadium",
+      page:"bangkok.html",
+      lat:13.7563,
+      lng:100.5018,
+      dates:["December 3, 2026","December 5, 2026","December 6, 2026"]
+    },
+    {
+      city:"Kuala Lumpur",
+      venue:"TM Stadium Nasional",
+      page:"kualalumpur.html",
+      lat:3.1390,
+      lng:101.6869,
+      dates:["December 12, 2026","December 13, 2026"]
+    },
+    {
+      city:"Singapore",
+      venue:"National Stadium",
+      page:"singapore.html",
+      lat:1.3521,
+      lng:103.8198,
+      dates:["December 17, 2026","December 19, 2026","December 20, 2026","December 22, 2026"]
+    },
+    {
+      city:"Jakarta",
+      venue:"Gelora Bung Karno Main Stadium",
+      page:"jakarta.html",
+      lat:-6.2088,
+      lng:106.8456,
+      dates:["December 26, 2026","December 27, 2026"]
+    },
+    {
+      city:"Melbourne",
+      venue:"Marvel Stadium",
+      page:"melbourne.html",
+      lat:-37.8136,
+      lng:144.9631,
+      dates:["February 12, 2027","February 13, 2027"]
+    },
+    {
+      city:"Sydney",
+      venue:"Accor Stadium",
+      page:"sydney.html",
+      lat:-33.8688,
+      lng:151.2093,
+      dates:["February 20, 2027","February 21, 2027"]
+    },
+    {
+      city:"Hong Kong",
+      venue:"Kai Tak Stadium",
+      page:"hongkong.html",
+      lat:22.3193,
+      lng:114.1694,
+      dates:["March 4, 2027","March 6, 2027","March 7, 2027"]
+    },
+    {
+      city:"Bulacan",
+      venue:"Philippine Sports Stadium",
+      page:"bulacan.html",
+      lat:14.7942,
+      lng:120.8799,
+      dates:["March 13, 2027","March 14, 2027"]
+    }
+  ];
+
+  function isCompleted(dateText){
+    return new Date(dateText) < today;
+  }
+
+  function cityCompleted(city){
+    const lastDate = city.dates[city.dates.length - 1];
+    return isCompleted(lastDate);
+  }
+
+  function loadTimeline(){
+    const timeline = document.getElementById("timeline");
+
+    tourCities.forEach(city => {
+      const cityBox = document.createElement("div");
+      cityBox.className = "city-group";
+
+      cityBox.innerHTML = `
+        <h3 class="city-name">${city.city}</h3>
+      `;
+
+      city.dates.forEach((date, index) => {
+        const item = document.createElement("a");
+        item.href = city.page;
+        item.className = "date-item";
+
+        if(isCompleted(date)){
+          item.classList.add("completed");
+        }
+
+        item.innerHTML = `
+          <span class="dot"></span>
+          <span class="day">Day ${index + 1}</span>
+          <span class="date">${date}</span>
+        `;
+
+        cityBox.appendChild(item);
+      });
+
+      timeline.appendChild(cityBox);
+    });
+  }
+
+  function loadRealMap(){
+    const map = L.map("tourMap", {
+      scrollWheelZoom:false,
+      worldCopyJump:true
+    }).setView([20, 0], 2);
+
+   L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+    attribution:"&copy; OpenStreetMap &copy; CARTO",
+   subdomains:"abcd",
+    maxZoom:20
+   }).addTo(map);
+
+    const completedIcon = L.divIcon({
+      className:"custom-pin completed-pin",
+      html:"<span></span>",
+      iconSize:[18,18],
+      iconAnchor:[9,9],
+      popupAnchor:[0,-10]
+    });
+
+    const upcomingIcon = L.divIcon({
+      className:"custom-pin upcoming-pin",
+      html:"<span></span>",
+      iconSize:[18,18],
+      iconAnchor:[9,9],
+      popupAnchor:[0,-10]
+    });
+
+    const bounds = [];
+
+    tourCities.forEach(city => {
+      const icon = cityCompleted(city) ? completedIcon : upcomingIcon;
+
+      L.marker([city.lat, city.lng], { icon })
+        .addTo(map)
+        .bindPopup(`
+          <div class="popup-city">${city.city}</div>
+          <div class="popup-venue">${city.venue}</div>
+          <a class="popup-link" href="${city.page}">Open city page</a>
+        `);
+
+      bounds.push([city.lat, city.lng]);
+    });
+
+    map.fitBounds(bounds, {
+      padding:[35,35]
+    });
+  }
+
+  loadTimeline();
+  loadRealMap();
+
+
+  const mapButton = document.getElementById("mapBtn");
+  const mapSection = document.getElementById("interactiveMap");
+
+  if(mapButton && mapSection){
+    mapButton.addEventListener("click", function(event){
+      event.preventDefault();
+
+      const mapPosition = mapSection.getBoundingClientRect().top + window.scrollY - 20;
+
+      window.scrollTo({
+        top: mapPosition,
+        behavior: "smooth"
+      });
+    });
+  }
+
+</script>
+
+
+
+</body>
+</html>

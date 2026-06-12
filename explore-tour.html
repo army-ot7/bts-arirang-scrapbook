@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Explore Tour | BTS Scrapbook</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="explore-tour.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+<header class="main-header">
+  <nav>
+    <div class="logo">
+      <img src="images/icons/tour-logo.png" alt="Logo">
+      <span>BTS Arirang Scrapbook</span>
+    </div>
+
+    <ul>
+      <li><a href="index.html">HOME</a></li>
+      <li><a href="tour-dates.html">TOUR DATES</a></li>
+      <li><a href="army.html">ARMY SPACE</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="explore-hero">
+
+  <div class="hero-left">
+    <div class="hero-stars">✧<br>☆ ☆</div>
+
+    <h1>
+      EXPLORE <br>
+      <span>THE TOUR</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Every city. Every memory.<br>
+      One unforgettable journey.
+    </p>
+
+    <div class="hero-label">
+      <img src="images/explore/memories-sign.png" alt="">
+
+      <div class="hero-label-text">
+        MEMORIES MADE BY ARMY
+        <br>
+        AROUND THE WORLD
+      </div>
+    </div>
+
+    <img src="images/decor/flower-red.png" class="hero-flower hero-flower-left">
+  </div>
+
+  <div class="hero-right">
+
+    <div class="paper-note">
+      Because of you,<br>
+      I found my<br>
+      best place in<br>
+      the world<br>
+      — BTS ♥
+    </div>
+
+    <div class="hero-photo hero-photo-back">
+      <img src="images/hero-1.jpg" alt="">
+    </div>
+
+    <div class="hero-photo hero-photo-front">
+      <img src="images/hero-2.jpg" alt="">
+      <p>us, always ♥</p>
+    </div>
+
+    <div class="tour-pass">
+      <img src="images/explore/tour-pass.png" alt="Tour Pass">
+    </div>
+
+  </div>
+
+</section>
+
+<main class="explore-main">
+
+  <section class="tour-progress paper-card">
+    <h2>TOUR PROGRESS</h2>
+
+    <div class="progress-number">
+      <span id="completed-cities">0</span> / <span id="total-cities">34</span>
+    </div>
+
+    <p class="small-title">CITIES COMPLETED</p>
+
+    <div id="tour-progress-list" class="progress-list"></div>
+
+    <p class="cities-left">
+      + <span id="cities-left">34</span> CITIES TO GO
+    </p>
+  </section>
+
+  <section class="featured-section">
+    <div class="section-title">
+      <h2>FEATURED MEMORIES</h2>
+      <span>☆</span>
+    </div>
+
+    <div id="featured-memories" class="featured-grid"></div>
+
+    <a href="army.html" class="red-btn">
+      GO TO ARMY SPACE →
+    </a>
+  </section>
+
+  <section class="best-moment">
+    <div class="section-title">
+      <h2>BEST MOMENT</h2>
+      <span>☆</span>
+    </div>
+
+    <div id="best-moment-card" class="best-card"></div>
+  </section>
+
+</main>
+
+<section class="army-wall-section">
+
+  <div class="wall-header">
+    <div>
+      <h2>ARMY WALL</h2>
+      <p>Messages from ARMY around the world ♥</p>
+    </div>
+
+    <button class="outline-btn" onclick="openMessageModal()">
+      ✎ WRITE A MESSAGE
+    </button>
+  </div>
+
+  <div id="army-wall" class="army-wall-grid">
+
+    <div class="army-note">
+      <h4>📍 BRAZIL</h4>
+      <p>Thank you for bringing us hope when we needed it the most.</p>
+      <span>by @lari_bts</span>
+      <img src="images/decor/flower-red.png" class="note-flower">
+    </div>
+
+    <div class="army-note">
+      <h4>📍 KOREA</h4>
+      <p>Proud is an understatement. You are our pride, always.</p>
+      <span>by @seoulmade</span>
+      <img src="images/decor/flower2.png" class="note-flower flower-small">
+    </div>
+
+    <div class="army-note">
+      <h4>📍 MEXICO</h4>
+      <p>Gracias por hacer de nuestros días grises, días llenos de colores.</p>
+      <span>by @army_mx</span>
+      <img src="images/decor/flower-red2.png" class="note-flower flower-small">
+    </div>
+
+    <div class="army-note">
+      <h4>📍 PHILIPPINES</h4>
+      <p>You inspire us to be better every day. We’ll walk with you forever.</p>
+      <span>by @bangtan.ph</span>
+      <img src="images/decor/flower2.png" class="note-flower flower-small">
+    </div>
+
+    <div class="army-note">
+      <h4>📍 FRANCE</h4>
+      <p>Votre musique, votre amour et vos mots nous ont sauvés. Merci BTS.</p>
+      <span>by @armyfrance</span>
+      <img src="images/decor/flower3.png" class="note-flower">
+    </div>
+
+  </div>
+</section>
+
+<section class="tour-scrapbook">
+
+  <div class="section-title scrapbook-title">
+    <h2>TOUR SCRAPBOOK</h2>
+    <p>Snapshots from the journey</p>
+  </div>
+
+  <div id="scrapbook-photos" class="scrapbook-arc"></div>
+
+  <div class="continue-group">
+    <div class="continued-note">
+      To be continued... ♥
+    </div>
+
+    <a href="#" id="next-memory-btn" class="see-more-btn">
+      next memory →
+    </a>
+  </div>
+
+</section>
+
+<section class="tour-stats">
+
+  <div class="stat-box">
+    <i class="fa-solid fa-heart stat-icon"></i>
+    <h3 id="stat-memories">0</h3>
+    <p>ARMY<br>MEMORIES<br>SHARED</p>
+  </div>
+
+  <div class="stat-box">
+    <i class="fa-solid fa-camera stat-icon"></i>
+    <h3 id="stat-photos">0</h3>
+    <p>PHOTOS<br>UPLOADED</p>
+  </div>
+
+  <div class="stat-box">
+    <i class="fa-solid fa-globe stat-icon"></i>
+    <h3 id="stat-cities">0 / 34</h3>
+    <p>CITIES<br>COMPLETED</p>
+  </div>
+
+  <div class="stat-box">
+    <i class="fa-solid fa-users stat-icon"></i>
+    <h3 id="stat-countries">0</h3>
+    <p>COUNTRIES<br>CONNECTED</p>
+  </div>
+
+</section>
+
+<footer class="footer">
+  <p>© BTS ARIRANG SCRAPBOOK 2026</p>
+  <p class="footer-center">FOR BTS, WITH ARMY, ALWAYS ♥</p>
+</footer>
+
+<div id="messageModal" class="message-modal">
+  <div class="message-box">
+    <button class="message-close" onclick="closeMessageModal()">×</button>
+
+    <h2>Leave a Message</h2>
+    <p>Send a little note from ARMY around the world ♥</p>
+
+    <input id="wall-name" type="text" placeholder="Your name or @username">
+
+    <input id="wall-country" type="text" placeholder="Country">
+
+    <textarea 
+      id="wall-message" 
+      maxlength="120"
+     placeholder="Write your message... max 120 characters">
+    </textarea>
+
+   <button class="message-post-btn" onclick="postArmyWallMessage()">
+     Post Message
+   </button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="tour-data.js"></script>
+<script src="explore-tour.js"></script>
+</body>
+</html>
