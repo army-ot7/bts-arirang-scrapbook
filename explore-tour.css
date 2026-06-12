@@ -1400,12 +1400,23 @@ body{
     z-index:50;
   }
 
-  .continued-note{
-    width:160px;
-    margin:0;
-    font-size:0.8rem;
+ .continued-note{
+    width:170px;
+    height:60px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+
+    font-size:0.9rem;
+    line-height:1.2;
+
+    white-space:normal;
+    word-break:keep-all;
+
     transform:rotate(-5deg);
-  }
+}
 
   .see-more-btn{
     margin:0;
