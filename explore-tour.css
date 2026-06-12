@@ -1124,15 +1124,15 @@ body{
 
 }
 
-
 .continue-group{
   position:relative;
-  margin-top:-50px;
+  width:fit-content;
+  margin:-70px auto 0;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:14px;
-  z-index:5;
+  gap:8px;
+  z-index:10;
 }
 
 .continued-note{
@@ -1142,7 +1142,7 @@ body{
 .see-more-btn{
   display:block;
   width:max-content;
-  margin:8px auto 0;
+  margin:0 auto;
   color:#a14343;
   text-decoration:none;
   font-family:'Patrick Hand', cursive;
@@ -1153,18 +1153,13 @@ body{
 @media(max-width:600px){
 
   .continue-group{
-    position:relative;
-    left:80px;
-    top:-160px;
-    transform:none;
-
-    width:100%;
-    max-width:170px;
-
-    justify-self:center;
-
-    margin-top:80px;
-}
+    margin:-95px 0 0 auto;
+    right:18px;
+    left:auto;
+    top:auto;
+    max-width:none;
+    width:fit-content;
+  }
 
 }
 
