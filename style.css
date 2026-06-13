@@ -609,6 +609,13 @@ li a:visited{
 
 @media(max-width: 768px){
 
+    .home-intro-phrase{
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin: 70px 0 55px;
+    }
+
     .army-letter-section{
         margin-bottom: 55px;
         padding: 0 10px;
