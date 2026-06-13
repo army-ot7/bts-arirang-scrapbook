@@ -1768,4 +1768,15 @@ li a:visited{
     }
 }
 
-
+/* FIX POLAROID FONT EVERYWHERE */
+.polaroid-caption,
+.memory-caption,
+.scrapbook-caption,
+.card-caption,
+.featured-card p,
+.featured-card span,
+.army-post-caption{
+    font-family:'Patrick Hand', cursive !important;
+    font-style:normal !important;
+    font-weight:400 !important;
+}
