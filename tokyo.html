@@ -185,6 +185,14 @@ function showDay(day){
     };
 
     document.getElementById("date-box").innerText = dates[day];
+   
+   if(day === 1){
+        concertSelect.value = "tokyo-day-1";
+    }
+
+    if(day === 2){
+        concertSelect.value = "tokyo-day-2";
+    }
 
     
     loadPhotos();
