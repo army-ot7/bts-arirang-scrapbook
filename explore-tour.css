@@ -1391,7 +1391,7 @@ body{
     position:absolute;
     width:160px;
     right:28px;
-    bottom:-200px;
+    bottom: 0px;
 
     display:flex;
     flex-direction:column;
