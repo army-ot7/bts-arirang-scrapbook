@@ -58,10 +58,30 @@ function isImage(url) {
 }
 
 async function loadExploreData() {
-  try { loadTourProgress(); } catch(e) { console.log(e); }
-  try { await loadScrapbookPhotos(); } catch(e) { console.log(e); }
-  try { await loadArmyFeatured(); } catch(e) { console.log(e); }
-  try { await loadArmyWallMessages(); } catch(e) { console.log(e); }
+
+  try {
+    loadTourProgress();
+  } catch(error) {
+    console.log("Tour progress failed:", error);
+  }
+
+  try {
+    await loadScrapbookPhotos();
+  } catch(error) {
+    console.log("Scrapbook failed:", error);
+  }
+
+  try {
+    await loadArmyFeatured();
+  } catch(error) {
+    console.log("Featured failed:", error);
+  }
+
+  try {
+    await loadArmyWallMessages();
+  } catch(error) {
+    console.log("Army wall failed:", error);
+  }
 
   setupNextMemoryButton();
 }
