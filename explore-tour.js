@@ -58,11 +58,11 @@ function isImage(url) {
 }
 
 async function loadExploreData() {
-  await loadTourProgress();
-  await loadScrapbookPhotos();
-  await loadArmyFeatured();
-  await loadArmyWallMessages();
-  
+  try { loadTourProgress(); } catch(e) { console.log(e); }
+  try { await loadScrapbookPhotos(); } catch(e) { console.log(e); }
+  try { await loadArmyFeatured(); } catch(e) { console.log(e); }
+  try { await loadArmyWallMessages(); } catch(e) { console.log(e); }
+
   setupNextMemoryButton();
 }
 
