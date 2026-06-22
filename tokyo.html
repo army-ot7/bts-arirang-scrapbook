@@ -11,7 +11,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title> Goyang Tour Stop</title>
+    <title> Tokyo Tour Stop</title>
 
     <!-- GOOGLE FONTS -->
 
@@ -178,15 +178,17 @@
 
 function showDay(day){
 
-    const dates={
+    const dates = {
         1:"April 17, 2026",
         2:"April 18, 2026"
-        
     };
 
     document.getElementById("date-box").innerText = dates[day];
-   
-   if(day === 1){
+
+    const concertSelect =
+    document.getElementById("concert-date");
+
+    if(day === 1){
         concertSelect.value = "tokyo-day-1";
     }
 
@@ -194,9 +196,7 @@ function showDay(day){
         concertSelect.value = "tokyo-day-2";
     }
 
-    
     loadPhotos();
-
 }
 
 
